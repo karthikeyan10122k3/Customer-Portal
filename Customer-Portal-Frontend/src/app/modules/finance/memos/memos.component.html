@@ -1,0 +1,219 @@
+<div class="memos-container">
+  <div class="memos-content">
+
+    <div class="page-header">
+      <h2 class="page-title">
+        <mat-icon class="icon">description</mat-icon>
+        Customer Memos
+      </h2>
+    
+      <button mat-button color="accent" class="btn btn-secondary border border-rounded d-flex align-items-center" routerLink="/finance">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-sort-bar">
+      <div class="filter-group">
+        <mat-icon class="icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search by Document Number"
+          [ngModel]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">sort</mat-icon>
+        <select
+          [(ngModel)]="sortOrder"
+          (change)="onSortChange()"
+          aria-label="Sort Order"
+        >
+          <option value="desc">Date: Newest First</option>
+          <option value="asc">Date: Oldest First</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">check_circle</mat-icon>
+        <select [(ngModel)]="selectedStatus" (change)="onStatusChange()" aria-label="Status Filter">
+          <option value="ALL">Status: All</option>
+          <option value="ACTIVE">Status: Active</option>
+          <option value="REVERSED">Status: Reversed</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">check_circle</mat-icon>
+        <select [(ngModel)]="selectedMemoType" (change)="onStatusChange()" aria-label="Status Filter">
+          <option value="ALL">MemoType: All</option>
+          <option value="G2">MemoType: Credit</option>
+          <option value="L2">MemoType: Debit</option>
+        </select>
+      </div>
+
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="fromDate">From:</label>
+          <input
+            id="fromDate"
+            type="date"
+            [(ngModel)]="filterFromDate"
+            (change)="onDateChange()"
+            aria-label="Filter From Date"
+          />
+        </div>
+
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="toDate">To:</label>
+          <input
+            id="toDate"
+            type="date"
+            [(ngModel)]="filterToDate"
+            (change)="onDateChange()"
+            aria-label="Filter To Date"
+          />
+        </div>
+    </div>
+
+    <!-- Page Size Dropdown -->
+    <div class="page-size-control" *ngIf="pagedMemos.length > 0">
+      <label for="pageSize">Records per page:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let size of [5, 10, 15, 20]" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
+    <!-- Memos -->
+    <div class="memo-list" *ngIf="pagedMemos.length > 0">
+      <div
+        class="memo-card"
+        *ngFor="let memo of pagedMemos"
+        [attr.data-memo-number]="memo.BillingDocumentNumber"
+      >
+      <div class="memo-header" tabindex="0" role="button">
+        <div class="memo-info">
+          <mat-icon>info</mat-icon>
+          <span><strong>Memo:</strong> {{ +memo.BillingDocumentNumber }}</span>
+        </div>
+      
+        <div class="status-chips">
+          <span class="status-chip credit" *ngIf="memo.MemoTypeText.toUpperCase() === 'CREDIT'">CREDIT</span>
+          <span class="status-chip debit" *ngIf="memo.MemoTypeText.toUpperCase() === 'DEBIT'">DEBIT</span>
+        </div>
+      
+        <div class="memo-date">
+          <mat-icon class="icon">event</mat-icon>
+          {{ memo.BillingDate | date: 'mediumDate' }}
+      
+          
+          <mat-icon
+            class="icon expand-icon"
+            [class.rotated]="isExpanded(memo.BillingDocumentNumber)"
+            (click)="toggleItems(memo.BillingDocumentNumber)"
+          >
+            expand_more
+          </mat-icon>
+        </div>
+      </div>
+
+        <div class="memo-details">
+        
+          <div *ngIf="memo.BillingDate">
+            <strong>Billing Date:</strong> {{ memo.BillingDate | date: 'mediumDate'  }}
+          </div>
+      
+          <div *ngIf="memo.Currency">
+            <strong>Currency:</strong> {{ memo.Currency }}
+          </div>
+        
+          <div *ngIf="memo.NetValue">
+            <strong>Total Net Value:</strong> {{ memo.NetValue | currency:memo.Currency:'symbol':'1.2-2' }}
+          </div>
+        
+          <div *ngIf="memo.SalesOrganizationText || memo.SalesOrganization">
+            <strong>Sales Org:</strong> {{ memo.SalesOrganizationText || memo.SalesOrganization }}
+          </div>
+        
+          <div *ngIf="memo.DistributionChannelText || memo.DistributionChannel">
+            <strong>Distribution Channel:</strong> {{ memo.DistributionChannelText || memo.DistributionChannel }}
+          </div>
+        
+          <div *ngIf="memo.DivisionText || memo.Division">
+            <strong>Division:</strong> {{ memo.DivisionText || memo.Division }}
+          </div>
+        
+          <div>
+            <strong>Cancellation Indicator:</strong> 
+            {{ memo.CancellationIndicator ? memo.CancellationIndicator : '--' }}
+          </div>
+          
+        
+          <div *ngIf="memo.MemoStatus">
+            <strong>Status:</strong> {{ memo.MemoStatus }}
+          </div>
+        
+        </div>
+        
+
+        <!-- Expandable Items Table -->
+        <div class="memo-items" [class.expanded]="isExpanded(memo.BillingDocumentNumber)">
+          <table>
+            <thead>
+              <tr>
+                <th>Item No</th>
+                <th>Material No</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Net Price</th>
+                <th>Net Value</th>
+                <!-- <th>TaxCode</th> -->
+                <th>Order No.</th>
+                <th>Order Item No.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of memo.Items">
+                <td>{{ +item.ItemNumber }}</td>
+                <td>{{ +item.MaterialNumber }}</td>
+                <td>{{ item.MaterialDescription }}</td>
+                <td>{{ item.BilledQuantity }} {{ item.SalesUnit }}</td>
+                <td *ngIf="+item.BilledQuantity > 0; else noValue">
+                  {{ +item.ItemNetValue / +item.BilledQuantity | currency:memo.Currency:'symbol':'1.2-2' }}
+                </td>
+                <ng-template #noValue>
+                  <td>—</td>
+                </ng-template>
+                <td>{{ item.ItemNetValue | currency:memo.Currency:'symbol':'1.2-2' }}</td>
+                <!-- <td>{{ item.TaxCode ? item.TaxCode : }}</td> -->
+                <td>{{ +item.SalesOrderNumber }}</td>
+                <td>{{ +item.SalesOrderItemNumber }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="pagedMemos.length === 0" class="no-results">
+      <mat-icon class="icon">info</mat-icon> No memos found for your criteria.
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <button (click)="previousPage()" [disabled]="currentPage === 1" aria-label="Previous Page">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages" aria-label="Next Page">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

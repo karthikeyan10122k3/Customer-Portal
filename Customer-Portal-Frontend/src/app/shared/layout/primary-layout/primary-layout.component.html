@@ -1,0 +1,73 @@
+
+    <div class="primary-layout">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <mat-icon class="app-icon">person</mat-icon>
+  
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-link"
+             routerLink="/dashboard"
+             routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </div>
+  
+        <div class="sidebar-divider"></div>
+  
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-link"
+             routerLink="/sales"
+             routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon>assessment</mat-icon>
+          <span>Sales & Distribution</span>
+        </div>
+  
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-link"
+             routerLink="/finance"
+             routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon>account_balance</mat-icon>
+          <span>Finance</span>
+        </div>
+  
+        <div class="sidebar-divider"></div>
+      </div>
+  
+      <!-- Main area -->
+      <div class="main-area">
+        <!-- Navbar -->
+        <mat-toolbar class="navbar">
+          <span class="toolbar-title">Welcome, {{ customerName }}</span>
+          
+          <div class="toolbar-actions">
+            <!-- Profile button -->
+            <button class="logout-button" mat-icon-button
+                    matTooltip="Profile"
+                    routerLink="/profile"
+                    routerLinkActive="active-link"
+                    [routerLinkActiveOptions]="{ exact: true }">
+              <mat-icon>face</mat-icon>
+            </button>
+        
+            <!-- Logout button -->
+            <button class="logout-button" mat-icon-button
+                    matTooltip="Logout"
+                    (click)="logout()">
+              <mat-icon>logout</mat-icon>
+            </button>
+          </div>
+        </mat-toolbar>
+        
+        
+  
+        <!-- Main router outlet -->
+         <div class="main-content">
+           <router-outlet></router-outlet>
+
+         </div>
+      </div>
+    </div>
+    

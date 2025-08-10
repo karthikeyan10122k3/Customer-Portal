@@ -1,0 +1,216 @@
+<div class="payments-container">
+  <div class="payments-content">
+    <div class="page-header">
+      <h2 class="page-title">
+        <mat-icon class="icon">payments</mat-icon>
+        Payments & Aging
+      </h2>
+    
+      <button mat-button color="accent" class="btn btn-secondary border border-rounded d-flex align-items-center" routerLink="/finance">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-sort-bar">
+      <div class="filter-group">
+        <mat-icon class="icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search by Billing Document"
+          [ngModel]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">sort</mat-icon>
+        <select [(ngModel)]="sortOrder" (change)="onSortChange()" aria-label="Sort Order">
+          <option value="desc">Date: Newest First</option>
+          <option value="asc">Date: Oldest First</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">check_circle</mat-icon>
+        <select [(ngModel)]="filterStatus" (change)="onStatusChange()" aria-label="Status Filter">
+          <option value="ALL">Status: All</option>
+          <option value="OPEN">Status: Open</option>
+          <option value="OVERDUE">Status: Overdue</option>
+        </select>
+      </div>
+
+      <div class="bottom-row-wrapper">
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="fromDate">From:</label>
+          <input
+            id="fromDate"
+            type="date"
+            [(ngModel)]="filterFromDate"
+            (change)="onDateChange()"
+            aria-label="Filter From Date"
+          />
+        </div>
+
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="toDate">To:</label>
+          <input
+            id="toDate"
+            type="date"
+            [(ngModel)]="filterToDate"
+            (change)="onDateChange()"
+            aria-label="Filter To Date"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Aging Summary -->
+    <div class="aging-summary">
+      <div class="summary-card" *ngFor="let bucket of agingBuckets">
+        <div class="summary-title">{{ bucket }}</div>
+        <div class="summary-amount" [style.color]="getAgingBucketColor(bucket)">
+          {{ getBucketTotal(bucket) | currency }}
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-title">Total Open</div>
+        <div class="summary-amount open">{{ getStatusTotal('OPEN') | currency }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-title">Total Overdue</div>
+        <div class="summary-amount overdue">{{ getStatusTotal('OVERDUE') | currency }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-title">Total Cleared</div>
+        <div class="summary-amount cleared">{{ getStatusTotal('CLEARED') | currency }}</div>
+      </div>
+    </div>
+    
+    <!-- Page Size Dropdown -->
+    <div class="page-size-control" *ngIf="pagedPayments.length > 0">
+      <label for="pageSize">Records per page:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let size of [5, 10, 15, 20]" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
+
+    <!-- Payments List -->
+    <div class="payment-list" *ngIf="pagedPayments.length > 0">
+      <div
+        class="payment-card"
+        *ngFor="let payment of pagedPayments"
+        [attr.data-billing-number]="payment.BillingDocumentNumber"
+      >
+        <div
+          class="payment-header"
+          tabindex="0"
+          role="button"
+        >
+          <div class="payment-info">
+            <mat-icon>receipt</mat-icon>
+            <span><strong>Billing Doc:</strong> {{ +payment.BillingDocumentNumber }}</span>
+          </div>
+
+          <div class="status-chips">
+            <span class="status-chip open" *ngIf="payment.AgingStatus === 'OPEN'">Open</span>
+            <span class="status-chip cleared" *ngIf="payment.AgingStatus === 'CLEARED'">Cleared</span>
+            <span class="status-chip overdue" *ngIf="payment.AgingStatus === 'OVERDUE'">OverDue</span>
+          </div>
+
+          <div class="payment-date">
+            <mat-icon class="icon">event</mat-icon>
+            {{ payment.BillingDate | date: 'mediumDate' }}
+          </div>
+        </div>
+
+        <div class="payment-details">
+          <div *ngIf="payment.PaymentTermDescription || payment.PaymentTermCode">
+            <strong>Payment Term: </strong> {{ payment.PaymentTermDescription || payment.PaymentTermCode }}
+          </div>
+          <div *ngIf="payment.BillingType">
+            <strong>Billing Type:</strong>
+            <ng-container [ngSwitch]="payment.BillingType">
+              <span *ngSwitchCase="'F2'"> Invoice</span>
+              <span *ngSwitchCase="'L2'"> Debit Memo</span>
+              <span *ngSwitchCase="'G2'"> Credit Memo</span>
+              <span *ngSwitchDefault>{{ payment.BillingType }}</span>
+            </ng-container>
+          </div>
+          
+        
+          <div *ngIf="payment.DueDate">
+            <strong>Due Date:</strong> {{ payment.DueDate | date: 'mediumDate'  }}
+          </div>
+        
+          <div *ngIf="payment.AgingDays !== null && payment.AgingDays !== undefined">
+            <strong>Aging Days:</strong> {{ +payment.AgingDays }} days
+          </div>
+        
+          <div *ngIf="payment.AgingBucket">
+            <strong>Aging Bucket:</strong> {{ payment.AgingBucket }}
+          </div>
+        
+          <div *ngIf="payment.ClearedFlag !== null && payment.ClearedFlag !== undefined">
+            <strong>Cleared:</strong> {{ payment.ClearedFlag ? 'Yes' : 'No' }}
+          </div>
+        
+          <div *ngIf="payment.ClearingDate">
+            <strong>Clearing Date:</strong> {{ payment.ClearedFlag ? payment.ClearingDate  : '-' }}  
+          </div>
+        
+          <div *ngIf="payment.NetAmount">
+            <strong>Net Amount:</strong> {{ +payment.NetAmount | currency: payment.Currency }}
+          </div>
+        
+          <!-- <div *ngIf="payment.ReferenceDocument">
+            <strong>Reference Document:</strong> {{ payment.ReferenceDocument }}
+          </div> -->
+        
+          <div *ngIf="payment.SalesOrderNumber">
+            <strong>Sales Order Number:</strong> {{ +payment.SalesOrderNumber }}
+          </div>
+        
+          <div *ngIf="payment.SalesOrderNumber; else noOrder">
+            <strong>Sales Order Link:</strong>
+            <a
+              [href]="'/sales/orders?order=' + payment.SalesOrderNumber"
+              target="_blank"
+              class="order-link"
+              title="View Sales Order"
+            >
+              View Order
+            </a>
+          </div>
+        
+          <ng-template #noOrder>
+            <div><strong>Sales Order Link:</strong> <span class="text-muted">—</span></div>
+          </ng-template>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="pagedPayments.length === 0" class="no-results">
+      <mat-icon class="icon">info</mat-icon>
+      No payment records found for your criteria.
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-controls">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

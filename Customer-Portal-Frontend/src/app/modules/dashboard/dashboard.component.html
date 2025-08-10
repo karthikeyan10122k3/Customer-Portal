@@ -1,0 +1,163 @@
+<div class="dashboard-container">
+  <h2 class="page-title">
+    <mat-icon class="icon">inventory</mat-icon>
+    Dashboard
+  </h2>  
+
+  <div class="filter-sort-bar">
+    <div class="filter-group">
+      <mat-icon class="icon">calendar_month</mat-icon>
+      <label for="fromDate">From:</label>
+      <input
+        id="fromDate"
+        type="date"
+        [(ngModel)]="filterFromDate"
+        (change)="loadDashboardData()"
+        aria-label="Filter From Date"
+      />
+    </div>
+  
+    <div class="filter-group">
+      <mat-icon class="icon">calendar_month</mat-icon>
+      <label for="toDate">To:</label>
+      <input
+        id="toDate"
+        type="date"
+        [(ngModel)]="filterToDate"
+        (change)="loadDashboardData()"
+        aria-label="Filter To Date"
+      />
+    </div>
+  </div>
+  <!-- KPI Summary Cards -->
+  <div class="dashboard-kpis">
+    <div class="kpi-card" *ngIf="kpis">
+      <div class="kpi-item">
+        <h4><mat-icon>question_answer</mat-icon> Inquiries</h4>
+        <p>{{ kpis.InquiryCount }}</p>
+      </div>
+      <div class="kpi-item">
+        <h4><mat-icon>attach_money</mat-icon> Inquiry Net Value</h4>
+        <p>{{ kpis.InquiryNetValue | currency: 'INR' }}</p>
+      </div>
+      <div class="kpi-item">
+        <h4><mat-icon>shopping_cart</mat-icon> Sales Orders</h4>
+        <p>{{ kpis.SalesOrderCount }}</p>
+      </div>
+      <div class="kpi-item">
+        <h4><mat-icon>currency_rupee</mat-icon> Sales Order Net Value</h4>
+        <p>{{ kpis.SalesOrderNetValue | currency: 'INR' }}</p>
+      </div>
+      <div class="kpi-item">
+        <h4><mat-icon>local_shipping</mat-icon> Deliveries</h4>
+        <p>{{ kpis.DeliveryCount }}</p>
+      </div>
+      <div class="kpi-item">
+        <h4><mat-icon>schedule</mat-icon> Avg Delivery Days</h4>
+        <p>{{ kpis.AverageDeliveryDays }}</p>
+      </div>
+      <div class="kpi-item warning">
+        <h4><mat-icon>error_outline</mat-icon> Overdue Sales Order</h4>
+        <p>{{ kpis.OverdueSalesOrderCount }}</p>
+      </div>
+      <div class="kpi-item danger">
+        <h4><mat-icon>warning</mat-icon> Overdue Deliveries</h4>
+        <p>{{ kpis.OverdueDeliveryCount }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Funnel Chart -->
+  <div class="funnel-container" *ngIf="funnelChartData">
+    <h3>
+      <mat-icon class="icon">filter_alt</mat-icon>
+      Conversion Funnel
+    </h3>
+    <canvas baseChart
+      [data]="funnelChartData"
+      [type]="'bar'"
+      [options]="funnelChartOptions"
+      [plugins]="[]">
+    </canvas>
+  </div>
+
+  <div class="pie-charts-container" *ngIf="kpis">
+    <h3>
+      <mat-icon class="icon">pie_chart</mat-icon>
+      Status Breakdown
+    </h3>
+    <div class="pie-chart" *ngFor="let chart of ['Inquiry', 'SalesOrder', 'Delivery']">
+      <h4>{{ chart }} Status</h4>
+      <canvas baseChart
+        [data]="
+          chart === 'Inquiry' ? inquiryStatusChartData :
+          chart === 'SalesOrder' ? salesOrderStatusChartData :
+          deliveryStatusChartData
+        "
+        [labels]="pieChartLabels"
+        [type]="pieChartType"
+        [options]="pieChartOptions">
+      </canvas>
+    </div>
+  </div>
+
+
+  <div class="trend-chart-container" *ngIf="trendChartData">
+    <h3>
+      <mat-icon class="icon">trending_up</mat-icon>
+      Monthly Trends
+    </h3>
+    <canvas baseChart
+      [data]="trendChartData"
+      [type]="trendChartType"
+      [options]="trendChartOptions">
+    </canvas>
+  </div>
+
+
+  <!-- Top Products Section -->
+  <div class="top-products-container" *ngIf="topProducts?.length">
+    <h3>
+      <mat-icon class="icon">star</mat-icon>
+      Top Products
+    </h3>    
+
+    <!-- Bar Chart -->
+    <canvas baseChart
+      [data]="topProductsChartData"
+      [options]="topProductsChartOptions"
+      [type]="topProductsChartType">
+    </canvas>
+  </div>
+
+  <!-- Alert Badge & Gauge Section -->
+  <div class="alerts-container" *ngIf="kpis">
+    
+    <h3>
+      <mat-icon class="icon">notifications_active</mat-icon>
+      Alerts & Metrics
+    </h3>
+
+    <div class="alert-badges">
+      <div class="alert-badge" [ngClass]="{'alert-danger': +kpis.OverdueSalesOrderCount > 0, 'alert-ok': +kpis.OverdueSalesOrderCount === 0}">
+        <strong>Overdue Sales Orders:</strong> {{ kpis.OverdueSalesOrderCount }}
+      </div>
+      <div class="alert-badge" [ngClass]="{'alert-danger': +kpis.OverdueDeliveryCount > 0, 'alert-ok': +kpis.OverdueDeliveryCount === 0}">
+        <strong>Overdue Deliveries:</strong> {{ kpis.OverdueDeliveryCount }}
+      </div>
+    </div>
+
+    <div class="gauge-container">
+      <h4>
+        <mat-icon class="icon">schedule</mat-icon>
+        Average Delivery Days
+      </h4>
+      <div class="gauge">
+        <div class="gauge-fill" [style.width.%]="calcAvgDeliveryDaysPercentage()"></div>
+        <div class="gauge-text">{{ kpis.AverageDeliveryDays }}</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

@@ -1,0 +1,166 @@
+/* Container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(var(--main-bg-start));
+  padding: 2rem;
+}
+
+/* Form Card */
+.login-form {
+  background: linear-gradient( var(--sidebar-bg-start), var(--sidebar-bg-end));
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  color: var(--accent-light-text);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--accent-light-text);
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent-light-text);
+}
+
+/* Input fields */
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 4px var(--accent-color);
+}
+
+/* Validation messages */
+.form-group small {
+  color: #fc5b6bd7;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  font-weight: bold;
+}
+
+/* Remember Me checkbox */
+.form-group.remember {
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+  gap: 0.5rem;          
+  font-size: 0.9rem;
+  color: var(--accent-light-text);
+}
+
+
+.form-group.remember label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  user-select: none;
+  color: var(--accent-light-text);
+}
+
+.form-group.remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;  
+}
+
+/* Submit Button */
+button[type="submit"] {
+  width: 100%;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--accent-active-bg);
+}
+
+button[type="submit"]:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Password wrapper for eye icon */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  flex: 1;
+  padding-right: 2.5rem; /* space for eye icon */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.password-wrapper input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 4px var(--accent-color);
+}
+
+/* Eye icon button */
+.eye-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--accent-light);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.eye-btn:focus {
+  outline: none;
+}
+
+/* Material icons color and size */
+.mat-icon {
+  color: var(--accent-color);
+  font-size: 1.2rem;
+}

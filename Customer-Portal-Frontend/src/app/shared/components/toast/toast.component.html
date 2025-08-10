@@ -1,0 +1,11 @@
+<div *ngIf="toastVisible" class="toast show align-items-center border-0" [ngClass]="{
+    'text-bg-success': toastType === 'success',
+    'text-bg-danger': toastType === 'error'
+  }" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        {{ toastMessage }}
+      </div>
+    </div>
+  </div>
+  

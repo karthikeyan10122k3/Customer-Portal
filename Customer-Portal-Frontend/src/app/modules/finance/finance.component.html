@@ -1,0 +1,49 @@
+<div class="finance-container">
+  <!-- Page Heading -->
+  <div class="finance-header">
+    <h2>
+      <mat-icon class="header-icon">account_balance_wallet</mat-icon>
+      Customer Financial Sheet
+    </h2>
+    <p class="subtitle">
+      View complete financial transactions between the customer and the company.
+    </p>
+  </div>
+
+  <!-- Tiles Section -->
+  <div class="finance-tiles">
+    <div class="tile" routerLink="invoices">
+      <div class="tile-content">
+        <mat-icon class="tile-icon">receipt_long</mat-icon>
+        <h3>Invoice Details</h3>
+        <p>View issued invoices</p>
+      </div>
+    </div>
+
+    <div class="tile" routerLink="payments">
+      <div class="tile-content">
+        <mat-icon class="tile-icon">payments</mat-icon>
+        <h3>Payments & Aging</h3>
+        <p>Track payments and aging analysis</p>
+      </div>
+    </div>
+
+    <div class="tile" routerLink="memos">
+      <div class="tile-content">
+        <mat-icon class="tile-icon">description</mat-icon>
+        <h3>Credit / Debit Memos</h3>
+        <p>Review issued memos</p>
+      </div>
+    </div>
+
+    <div class="tile" routerLink="overall-sales">
+      <div class="tile-content">
+        <mat-icon class="tile-icon">insights</mat-icon>
+        <h3>Sales Summary</h3>
+        <p>Get overall financial snapshot</p>
+      </div>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

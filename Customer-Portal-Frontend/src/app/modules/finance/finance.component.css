@@ -1,0 +1,72 @@
+.finance-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: calc(100vh - 50px);
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .finance-header {
+    text-align: center;
+    margin-bottom: 40px;
+  
+    h2 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+  
+    .subtitle {
+      font-size: 1.2rem;
+    }
+  }
+  
+  .finance-tiles {
+    display: flex;
+    gap: 25px;
+    max-width: 1100px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .tile {
+    width: 240px;
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+  
+    .tile-content {
+      h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+  
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  /* Themed Colors */
+  .tile:nth-child(1) {
+    background-color: #fce4ec;   /*  Light Pink - Invoices*/
+  }
+  .tile:nth-child(2) {
+    background-color: #e8f5e9;  /*Light Green - Payments*/
+  }
+  .tile:nth-child(3) {
+    background-color: #fff9c4; /*Light Yellow - Memos*/
+  }
+  .tile:nth-child(4) {
+    background-color: #e3f2fd;   /*Light Blue - Summary*/
+  }
+  

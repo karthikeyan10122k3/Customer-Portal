@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+    --sidebar-bg-start: #37474f;         /* slate gray dark */
+    --sidebar-bg-end: #455a64;           /* slate gray medium */
+    --accent-color: #ff5722;             /* burnt orange */
+    --accent-light: rgba(255, 87, 34, 0.15);
+    --accent-active-bg: rgba(255, 87, 34, 0.25);
+    --accent-divider: rgba(255, 87, 34, 0.3);
+    --accent-light-text: #f7f7f7;        /* soft cream */
+    --main-bg-start: #dadada;             /* light gray */
+    --main-bg-end: #858484;               /* white */
+    --text-color: #ffffff;                /* light gray text */
+  }
+  
+  
+body{
+ margin: 0;
+ padding: 0;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+  

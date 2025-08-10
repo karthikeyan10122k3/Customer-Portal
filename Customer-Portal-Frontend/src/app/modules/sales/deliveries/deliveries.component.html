@@ -1,0 +1,230 @@
+<div class="deliveries-container">
+  <div class="deliveries-content">
+    <div class="page-header">
+      <h2 class="page-title">
+        <mat-icon class="icon">local_shipping</mat-icon>
+        Deliveries
+      </h2>
+    
+      <button mat-button color="accent" class="btn btn-secondary border border-rounded d-flex align-items-center" routerLink="/sales">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      
+    </div>
+    <!-- Filters -->
+    <div class="filter-sort-bar">
+      <div class="filter-group">
+        <mat-icon class="icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search by Delivery Number"
+          [ngModel]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">sort</mat-icon>
+        <select
+          [(ngModel)]="sortOrder"
+          (change)="onSortChange()"
+          aria-label="Sort Order"
+        >
+          <option value="desc">Date: Newest First</option>
+          <option value="asc">Date: Oldest First</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">check_circle</mat-icon>
+        <select [(ngModel)]="selectedStatus" (change)="onStatusChange()" aria-label="Delivery Status Filter">
+          <option value="ALL">Status: All</option>
+          <option value="OPEN">Status: Open</option>
+          <option value="PARTIAL">Status: Partial</option>
+          <option value="FULL">Status: Full</option>
+        </select>
+      </div>
+
+      <div class="bottom-row-wrapper">
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="fromDate">From:</label>
+          <input
+            id="fromDate"
+            type="date"
+            [(ngModel)]="filterFromDate"
+            (change)="onDateChange()"
+            aria-label="Filter From Date"
+          />
+        </div>
+
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="toDate">To:</label>
+          <input
+            id="toDate"
+            type="date"
+            [(ngModel)]="filterToDate"
+            (change)="onDateChange()"
+            aria-label="Filter To Date"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Size Dropdown -->
+    <div class="page-size-control" *ngIf="pagedDeliveries.length > 0">
+      <label for="pageSize">Records per page:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let size of [5, 10, 15, 20]" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
+    <!-- Deliveries -->
+    <div class="delivery-list" *ngIf="pagedDeliveries.length > 0">
+      <div
+        class="delivery-card"
+        *ngFor="let delivery of pagedDeliveries"
+        [attr.data-delivery-number]="delivery.DeliveryNumber"
+      >
+        <div
+          class="delivery-header"
+          tabindex="0"
+          role="button"
+        >
+          <div class="delivery-info">
+            <mat-icon>local_shipping</mat-icon>
+            <span><strong>Delivery:</strong> {{ +delivery.DeliveryNumber }}</span>
+          </div>
+
+          <!-- Status Chips -->
+          <div class="status-chips">
+            <span class="status-chip full" *ngIf="delivery.DeliveryBillingStatusText === 'FULL'">Fully Billed</span>
+            <span class="status-chip partial" *ngIf="delivery.DeliveryBillingStatusText === 'PARTIAL'">Partially Billed</span>
+            <span class="status-chip open" *ngIf="delivery.DeliveryBillingStatusText === 'OPEN'">Not Yet Billed</span>
+          </div>
+
+          <div class="delivery-date">
+            <mat-icon class="icon">event</mat-icon>
+            {{ delivery.PlannedGoodsIssueDate | date: 'mediumDate' }}
+            <mat-icon
+            class="icon expand-icon"
+            [class.rotated]="isExpanded(delivery.DeliveryNumber)"
+            (click)="toggleItems(delivery.DeliveryNumber)"
+          >
+            expand_more
+          </mat-icon>
+          
+          </div>
+        </div>
+
+        <div class="delivery-details">
+          <div *ngIf="delivery.SalesOrganizationText"><strong>Sales Org:</strong> {{ delivery.SalesOrganizationText }}</div>
+          <div *ngIf="delivery.SalesOfficeText"><strong>Sales Office:</strong> {{ delivery.SalesOfficeText }}</div>
+          <div *ngIf="delivery.DistributionChannelText || delivery.DistributionChannel">
+            <strong>Dist. Channel:</strong> {{ delivery.DistributionChannelText || delivery.DistributionChannel }}
+          </div>
+          <div *ngIf="delivery.ShippingPointText"><strong>Shipping Point:</strong> {{ delivery.ShippingPointText }}</div>
+          <div *ngIf="delivery.ShippingConditionText"><strong>Shipping Condition:</strong> {{ delivery.ShippingConditionText }}</div>
+          <div *ngIf="delivery.DeliveryTypeText"><strong>Delivery Type:</strong> {{ delivery.DeliveryTypeText }}</div>
+          <div *ngIf="delivery.RouteText || delivery.Route"><strong>Route:</strong> {{ delivery.RouteText || delivery.Route }}</div>
+          <div *ngIf="delivery.DeliveryBlock"><strong>Delivery Block:</strong> {{ delivery.DeliveryBlock }}</div>
+
+          <div *ngIf="delivery.ReferenceDocument"><strong>Reference Document:</strong> {{ delivery.ReferenceDocument }}</div>
+        
+          <div *ngIf="delivery.TransportationPlanningDate"><strong>Transportation Planning Date:</strong> {{ delivery.TransportationPlanningDate | date: 'mediumDate' }}</div>
+          <div *ngIf="delivery.ActualGoodsIssueDate"><strong>Actual Goods Issue Date:</strong> {{ delivery.ActualGoodsIssueDate | date: 'mediumDate' }}</div>
+          <div *ngIf="delivery.BillingDate"><strong>Billing Date:</strong> {{ delivery.BillingDate | date: 'mediumDate'  }}</div>
+          <div *ngIf="delivery.LoadingDate"><strong>Loading Date:</strong> {{ delivery.LoadingDate | date: 'mediumDate'  }}</div>
+        
+          <div *ngIf="delivery.TotalItems"><strong>Total Items:</strong> {{ +delivery.TotalItems }}</div>
+          <div *ngIf="delivery.BilledItems"><strong>Billed Items:</strong> {{ +delivery.BilledItems }}</div>
+          <div *ngIf="delivery.PickedItems"><strong>Picked Items:</strong> {{ +delivery.PickedItems }}</div>
+          <div *ngIf="delivery.PackedItems"><strong>Packed Items:</strong> {{ +delivery.PackedItems }}</div>
+        
+          <div *ngIf="delivery.TotalNetValue"><strong>Total Net Value:</strong> {{ delivery.TotalNetValue | currency:delivery.Currency:'symbol':'1.2-2' }}</div>
+        </div>
+        
+
+        <!-- Expandable Items Table -->
+        <div class="delivery-items" [class.expanded]="isExpanded(delivery.DeliveryNumber)">
+          <table>
+            <thead>
+              <tr>
+                <th>Item No</th>
+                <th>Material No</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Net Price</th>
+                <th>Net Value</th>
+                <th>Billed</th>
+                <th>Billed Doc. Number</th>
+                <th>Billing Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of delivery.items">
+                <td>{{ +item.ItemNumber }}</td>
+                <td>{{ +item.MaterialNumber }}</td>
+                <td>{{ item.MaterialDescription }}</td>
+                <td>{{ item.DeliveryQuantity }} {{ item.UOM }}</td>
+                <td *ngIf="+item.DeliveryQuantity > 0; else noValue">
+                  {{ +item.NetValue / +item.DeliveryQuantity | currency:delivery.Currency:'symbol':'1.2-2' }}
+                </td>
+                <ng-template #noValue>
+                  <td>—</td>
+                </ng-template>
+                
+                
+                <td>{{ item.NetValue | currency:delivery.Currency :'symbol':'1.2-2' }}</td>
+                <td>
+                  <mat-icon
+                    *ngIf="item.IsBilled === 'X'; else notOrdered"
+                    aria-label="Ordered"
+                    >check_circle</mat-icon
+                  >
+                  <ng-template #notOrdered>
+                    <mat-icon aria-label="Not Ordered">cancel</mat-icon>
+                  </ng-template>
+                </td>
+                <td>{{ item.BillingDocument ? +item.BillingDocument : '—' }}</td>
+                <td>
+                  <ng-container *ngIf="item.BillingDocument; else noBilling">
+                    <a
+                      [href]="'/finance/invoices?invoice=' + item.BillingDocument"
+                      target="_blank"
+                      class="billing-link"
+                      title="View Billing"
+                    >
+                    View Billing
+                    </a>
+                  </ng-container>
+                  <ng-template #noBilling>
+                    <span class="text-muted">—</span>
+                  </ng-template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="pagedDeliveries.length === 0" class="no-results">
+      <mat-icon class="icon">info</mat-icon> No deliveries found for your criteria.
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <button (click)="previousPage()" [disabled]="currentPage === 1" aria-label="Previous Page">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages" aria-label="Next Page">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

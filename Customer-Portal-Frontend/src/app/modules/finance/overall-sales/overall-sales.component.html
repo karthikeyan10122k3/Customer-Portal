@@ -1,0 +1,194 @@
+<div class="dashboard-container">
+
+  <div class="page-header">
+    <h2 class="page-title">
+      <mat-icon class="icon">leaderboard</mat-icon>
+      OverAll Sales
+    </h2>
+  
+    <button mat-button color="accent" class="btn btn-secondary border border-rounded d-flex align-items-center" routerLink="/finance">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+    
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="dashboard-kpis">
+    <div class="kpi-card" *ngIf="overAllSalesSummary">
+
+      <div class="kpi-item">
+        <h4><mat-icon>receipt_long</mat-icon>Total Invoices</h4>
+        <p>{{ overAllSalesSummary.TotalInvoiceCount }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>attach_money</mat-icon>Invoice Value</h4>
+        <p>{{ overAllSalesSummary.TotalInvoiceAmount | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>credit_card</mat-icon>Credit Memo Count</h4>
+        <p>{{ overAllSalesSummary.TotalCreditMemoCount }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>request_quote</mat-icon>Credit Memo Amount</h4>
+        <p>{{ overAllSalesSummary.TotalCreditMemoAmount | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>account_balance_wallet</mat-icon>Debit Memo Count</h4>
+        <p>{{ overAllSalesSummary.TotalDebitMemoCount }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>money_off</mat-icon>Debit Memo Amount</h4>
+        <p>{{ overAllSalesSummary.TotalDebitMemoAmount | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>payments</mat-icon>Paid Amount</h4>
+        <p>{{ overAllSalesSummary.TotalPaidAmount | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>account_balance</mat-icon>Open Amount</h4>
+        <p>{{ overAllSalesSummary.TotalOpenAmount | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item">
+        <h4><mat-icon>payment</mat-icon>Total Payments</h4>
+        <p>{{ overAllSalesSummary.TotalPayments }}</p>
+      </div>
+
+      <div class="kpi-item success">
+        <h4><mat-icon>check_circle</mat-icon>Payments Cleared</h4>
+        <p>{{ overAllSalesSummary.PaymentsCleared | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item warning">
+        <h4><mat-icon>warning</mat-icon>Payments Overdue</h4>
+        <p>{{ overAllSalesSummary.PaymentsOverdue | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+      <div class="kpi-item danger">
+        <h4><mat-icon>error</mat-icon>Payments Open</h4>
+        <p>{{ overAllSalesSummary.PaymentsOpen | currency:overAllSalesSummary.Currency }}</p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="chart-container"  *ngIf="!isLoading && overAllSalesSummary">
+    <div class="round-charts">
+
+      <div class="payment-status-chart">
+        <h2 class="chart-title">
+          <mat-icon class="icon">pie_chart</mat-icon>
+        Payment Status Breakdown
+        </h2>
+        <div class="chart-wrapper">
+          <canvas baseChart
+          [data]="paymentStatusChartData"
+          [options]="paymentStatusChartOptions"
+          [type]="'pie'"
+          (chartClick)="onPaymentStatusClick($event)"
+          class="custom-pie-chart-size">
+          </canvas>
+        </div>
+        
+      </div>
+      <div class="document-counts-chart">
+        <h2 class="chart-title">
+          <mat-icon class="icon">donut_large</mat-icon>
+          Document Counts Breakdown
+        </h2>
+        <canvas baseChart
+                [data]="documentCountsChartData"
+                [options]="documentCountsChartOptions"
+                [type]="'doughnut'"
+                class="custom-doughnut-chart-size">
+        </canvas>
+      </div>  
+    </div>
+
+  </div>
+  <!-- Product-wise Invoicing Chart (Horizontal Bar) -->
+  <div class="chart-container" *ngIf="!isLoading && productSummary.length > 0">
+    <h2 class="chart-title">
+      <mat-icon class="icon">bar_chart</mat-icon>
+      Product-wise Invoicing
+    </h2>
+    <div class="chart-wrapper">
+
+      <canvas baseChart
+            [data]="productChartData"
+            [options]="productChartOptions"
+            [type]="'bar'"
+            class="custom-vertical-bar-chart-size">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Aging Analysis Chart -->
+  <div class="chart-container" *ngIf="!isLoading && aging.length > 0">
+    <h2 class="chart-title">
+      <mat-icon class="icon">stacked_bar_chart</mat-icon>
+      Aging Analysis
+    </h2>
+
+    <div class="chart-wrapper">
+      <canvas baseChart
+            [data]="agingChartData"
+            [options]="agingChartOptions"
+            [type]="'bar'"
+            class="custom-horizontal-bar-chart-size">
+    </canvas>
+  </div>
+  </div>
+
+  <!-- Payment Status Donut Chart -->
+
+  <!-- Drilldown Modal -->
+  <div *ngIf="isPaymentDrilldownOpen" class="modal-backdrop">
+    <div class="modal-content">
+      <h3>Payment Documents - {{ selectedStatusLabel }}</h3>
+      <button (click)="closeDrilldown()" aria-label="Close Drilldown">Close</button>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Document ID</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Due Date</th>
+              <th>Clear Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of paymentDetails">
+              <td>
+                <a
+                  [href]="'/finance/invoices?invoice=' + doc.PaymentDocumentNumber"
+                  target="_blank"
+                  class="billing-link"
+                  title="View Billing"
+                  >
+                  {{doc.PaymentDocumentNumber}}
+                </a>
+              </td>
+              <td>{{ doc.PaymentStatus }}</td>
+              <td>{{ doc.Amount | currency: doc.Currency }} </td>
+              <td>{{ doc.DueDate | date }}</td>
+              <td>{{ doc.ClearDate ? doc.ClearDate : '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

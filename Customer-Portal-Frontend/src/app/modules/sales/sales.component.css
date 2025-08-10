@@ -1,0 +1,62 @@
+.sales-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: calc(100vh - 50px);
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .sales-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .sales-header .subtitle {
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+  
+  .sales-tiles {
+    display: flex;
+    gap: 25px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .tile {
+    width: 250px;
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  .tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .tile-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .tile-content p {
+    font-size: 1rem;
+  }
+
+  .tile:nth-child(1) {
+    background-color: #bce0fa; 
+  }
+  
+  .tile:nth-child(2) {
+    background-color: #fff3e0; 
+  }
+  
+  .tile:nth-child(3) {
+    background-color: #c2f8c3; 
+  }

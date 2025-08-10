@@ -1,0 +1,234 @@
+<div class="inquiries-container">
+  <div class="inquiries-content">
+    <div class="page-header">
+      <h2 class="page-title">
+        <mat-icon class="icon">question_answer</mat-icon>
+        Sales Inquiries
+      </h2>
+    
+      <button mat-button color="accent" class="btn btn-secondary border border-rounded d-flex align-items-center" routerLink="/sales">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-sort-bar">
+      <div class="filter-group">
+        <mat-icon class="icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search by Document Number"
+          [ngModel]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">sort</mat-icon>
+        <select
+          [(ngModel)]="sortOrder"
+          (change)="onSortChange()"
+          aria-label="Sort Order"
+        >
+          <option value="desc">Date: Newest First</option>
+          <option value="asc">Date: Oldest First</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">check_circle</mat-icon>
+        <select [(ngModel)]="selectedStatus" (change)="onStatusChange()" aria-label="Status Filter">
+          <option value="ALL">Status: All</option>
+          <option value="OPEN">Status: Open</option>
+          <option value="PARTIAL">Status: Partial</option>
+          <option value="FULL">Status: Full</option>
+        </select>
+      </div>
+
+      <div class="bottom-row-wrapper">
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="fromDate">From:</label>
+          <input
+            id="fromDate"
+            type="date"
+            [(ngModel)]="filterFromDate"
+            (change)="onDateChange()"
+            aria-label="Filter From Date"
+          />
+        </div>
+
+        <div class="filter-group">
+          <mat-icon class="icon">calendar_month</mat-icon>
+          <label for="toDate">To:</label>
+          <input
+            id="toDate"
+            type="date"
+            [(ngModel)]="filterToDate"
+            (change)="onDateChange()"
+            aria-label="Filter To Date"
+          />
+        </div>
+    </div>
+
+    </div>
+
+      <!-- Page Size Dropdown -->
+    <div class="page-size-control" *ngIf="pagedSalesInquiries.length > 0">
+      <label for="pageSize">Records per page:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let size of [5, 10, 15, 20]" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
+    <!-- Inquiries -->
+    <div class="inquiry-list" *ngIf="pagedSalesInquiries.length > 0">
+      <div
+        class="inquiry-card"
+        *ngFor="let inquiry of pagedSalesInquiries"
+        [attr.data-inquiry-number]="inquiry.InquiryNumber"
+      >
+        <div
+          class="inquiry-header"
+          tabindex="0"
+          role="button"
+        >
+          <div class="inquiry-info">
+            <mat-icon>info</mat-icon>
+            <span><strong>Inquiry:</strong> {{ +inquiry.InquiryNumber}}</span>
+          </div>
+
+          <!-- Status Chips -->
+          <div class="status-chips">
+            <span
+              class="status-chip full"
+              *ngIf="inquiry.FullyOrderedFlag === 'X' || inquiry.Status.toUpperCase() === 'FULL'"
+              >Fully Ordered</span
+            >
+            <span
+              class="status-chip partial"
+              *ngIf="inquiry.PartiallyOrderedFlag === 'X' || inquiry.Status.toUpperCase() === 'PARTIAL'"
+              >Partially Ordered</span
+            >
+            <span
+              class="status-chip open"
+              *ngIf="!inquiry.FullyOrderedFlag && !inquiry.PartiallyOrderedFlag && inquiry.Status.toUpperCase() === 'OPEN'"
+              >Not Yet Ordered</span
+            >
+          </div>
+
+          <div class="inquiry-date">
+            <mat-icon class="icon">event</mat-icon>
+            {{ inquiry.DocumentDate | date: 'mediumDate' }}
+            <mat-icon
+            class="icon expand-icon"
+            [class.rotated]="isExpanded(inquiry.InquiryNumber)"
+            (click)="toggleItems(inquiry.InquiryNumber)"
+          >
+            expand_more
+          </mat-icon>
+          
+          </div>
+        </div>
+
+        <div class="inquiry-details">
+          <!-- Left group -->
+          <div><strong>Record Creation: </strong> {{ inquiry.RecordCreationDate | date: 'mediumDate' }}</div>
+          <div><strong>Sales Org: </strong> {{ inquiry.SalesOrganizationText }}</div>
+          <div *ngIf="inquiry.SalesOfficeText"><strong>Sales Office:</strong> {{ inquiry.SalesOfficeText }}</div>
+          <div *ngIf="inquiry.SalesGroupText "><strong>Sales Group:</strong> {{ inquiry.SalesGroupText }}</div>
+        
+          <div><strong>Dist. Channel:</strong> {{ inquiry.DistributionChannelText }}</div>
+          <div><strong>Division:</strong> {{ inquiry.DivisionText }}</div>
+          <div><strong>Customer PO No:</strong> {{ inquiry.CustomerPONumber }}</div>
+          <div><strong>Valid From:</strong> {{ inquiry.ValidFrom | date: 'mediumDate' }}</div>
+          <div><strong>Valid To:</strong> {{ inquiry.ValidTo | date: 'mediumDate' }}</div>
+          <div><strong>Total Items:</strong> {{ +inquiry.TotalItems }}</div>
+          <div><strong>Total Items Ordered:</strong> {{ +inquiry.TotalOrderedItems }}</div>
+          <div><strong>Total Net Value:</strong> {{ inquiry.TotalNetValue | number:'1.2-2' }}</div>
+        
+        </div>
+        
+
+        <!-- Expandable Items Table -->
+        <div
+          class="inquiry-items"
+          [class.expanded]="isExpanded(inquiry.InquiryNumber)"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>Item No</th>
+                <th>Material No</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Net Price</th>
+                <th>Net Value</th>
+                <th>Ordered</th>
+                <th>Order Doc. Number</th>
+                <th>Order Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of inquiry.Items">
+                <td>{{ +item.ItemNumber }}</td>
+                <td>{{ +item.MaterialNumber }}</td>
+                <td>{{ item.Description }}</td>
+                <td>{{ item.Quantity }} {{ item.SalesUnit }}</td>
+                <td>{{ item.NetPrice | currency:item.Currency:'symbol':'1.2-2' }}</td>
+                <td>{{ item.NetValue | currency:item.Currency:'symbol':'1.2-2' }}</td>
+                <td>
+                  <mat-icon
+                    *ngIf="item.IsOrderedFlag === 'X'; else notOrdered"
+                    aria-label="Ordered"
+                    >check_circle</mat-icon
+                  >
+                  <ng-template #notOrdered>
+                    <mat-icon aria-label="Not Ordered">cancel</mat-icon>
+                  </ng-template>
+                </td>
+                <td>{{item.SalesOrderItemNumber | salesItemNumber }}</td>
+                <td>
+                  <ng-container class="order-link" *ngIf="item.SalesOrderNumber; else noOrder">
+                    <a
+                      [href]="'/sales/orders?order=' + item.SalesOrderNumber"
+                      target="_blank"
+                      class="order-link"
+                      title="View Sales Order"
+                    >
+                      View Order
+                    </a>
+                  </ng-container>
+                  
+                  <ng-template #noOrder>
+                    <span class="text-muted">—</span>
+                  </ng-template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="pagedSalesInquiries.length === 0" class="no-results">
+      <mat-icon class="icon">info</mat-icon> No inquiries found for your criteria.
+    </div>
+  </div>
+
+
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <button (click)="previousPage()" [disabled]="currentPage === 1" aria-label="Previous Page">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages" aria-label="Next Page">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

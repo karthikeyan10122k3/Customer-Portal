@@ -1,0 +1,25 @@
+{
+  "name": "customer-portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd Customer-Portal-Frontend && ng serve\" \"cd Customer-Portal-Backend && npm run dev\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karthikeyan10122k3/Customer-Portal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/karthikeyan10122k3/Customer-Portal/issues"
+  },
+  "homepage": "https://github.com/karthikeyan10122k3/Customer-Portal#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

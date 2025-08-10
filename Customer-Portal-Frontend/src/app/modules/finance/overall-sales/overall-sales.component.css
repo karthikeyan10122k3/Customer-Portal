@@ -1,0 +1,257 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 40px);
+  padding: 32px;
+  max-width: 1280px;
+  margin: auto;
+  background-color: var(--main-bg-start);
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--sidebar-bg-end); 
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-button {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  outline: none;
+}
+
+.icon {
+  vertical-align: middle;
+  color: var(--accent-color); 
+}
+
+/* KPI Cards */
+.dashboard-kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.kpi-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.kpi-item {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+  cursor: default;
+  user-select: none;
+  color: #222;
+}
+
+.kpi-item h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.kpi-item h4 mat-icon {
+  font-size: 18px;
+  color: #888;
+}
+
+.kpi-item p {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.kpi-item:hover {
+  transform: translateY(-4px);
+}
+
+.kpi-item.success p {
+  color: #28a745;
+}
+
+.kpi-item.warning p {
+  color: #ffc107;
+}
+
+.kpi-item.danger p {
+  color: #dc3545;
+}
+
+
+/* Chart Containers */
+.chart-container {
+  margin-bottom: 40px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  height: 550px;
+}
+.round-charts{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chart-title {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  font-weight: bolder;
+  margin-bottom: 16px;
+  color: #333;
+
+  .icon {
+    margin-right: 8px;
+    color: #17a2b8;
+  }
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+
+  h3 {
+    margin-bottom: 16px;
+    color: #444;
+  }
+
+  button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #c0392b;
+    }
+  }
+
+  .table-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      background-color: #f1f1f1;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    td a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: capitalize;
+    }
+  }
+}
+
+/* Status Badge Classes */
+.status-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-danger {
+  background-color: #f8d7da;
+  color: hsl(354, 61%, 28%);
+}
+
+.custom-pie-chart-size {
+  width: 500px !important;
+  height: 500px !important;
+}
+.custom-doughnut-chart-size {
+  width: 550px !important;
+  height: 500px !important;
+}
+
+.custom-vertical-bar-chart-size{
+  width: 1000px !important;
+  height: 450px !important;
+}
+.custom-horizontal-bar-chart-size{
+  width: 1000px !important;
+  height: 450px !important;
+}
+
+.chart-wrapper {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  width: 100%;
+}

@@ -1,0 +1,66 @@
+export interface DeliveryItem {
+  DeliveryNumber: string;
+  ItemNumber: string;
+  MaterialNumber: string;
+  MaterialDescription: string;
+  DeliveryQuantity: string;
+  UOM: string;
+  PlantName: string;
+  Street: string;
+  PostalCode: string;
+  City: string;
+  StorageLocationText: string;
+  ReferenceDocument: string;
+  ReferenceItem: string;
+  NetValue: string;
+  Plant: string;
+  BatchNumber: string;
+  PickedQuantity: string;
+  BillingDocument: string;
+  BillingItem: string;
+  IsBilled: string;
+  PickingStatus: string;
+  PackingStatus: string;
+  GoodsIssueStatus: string;
+}
+
+export interface Delivery {
+  DeliveryNumber: string;
+  PlannedGoodsIssueDate: string;
+  ActualGoodsIssueDate: string;
+  RecordCreationDate: string;
+  SalesOrganization: string;
+  ShippingPoint: string;
+  DistributionChannel: string;
+  DeliveryType: string;
+  ShipToParty: string;
+  SoldToParty: string;
+  BillingDate: string;
+  LoadingDate: string;
+  TransportationPlanningDate: string;
+  ShippingCondition: string;
+  Route: string;
+  DeliveryBlock: string;
+  BillingBlock: string;
+  SalesOffice: string;
+  Currency: string;
+  ReferenceDocument: string;
+  ShippingPointText: string;
+  DistributionChannelText: string;
+  DeliveryTypeText: string;
+  ShippingConditionText: string;
+  RouteText: string;
+  SalesOfficeText: string;
+  BillingBlockText: string;
+  SalesOrganizationText: string;
+  TotalItems: string;
+  TotalNetValue: string;
+  DeliveryBillingStatusText: string;
+  BilledItems: string;
+  PickedItems: string;
+  PackedItems: string;
+  IsFullyBilled: string;
+  IsPartiallyBilled: string;
+  IsFullyPacked: string;
+  items: DeliveryItem[];
+}

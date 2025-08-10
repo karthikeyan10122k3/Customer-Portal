@@ -1,0 +1,238 @@
+<div class="invoices-container">
+    <div class="invoices-content">
+      <div class="page-header">
+        <h2 class="page-title">
+          <mat-icon class="icon">receipt_long</mat-icon>
+          Invoices
+        </h2>
+      
+        <button mat-button color="accent" class="btn btn-secondary border border-rounded d-flex align-items-center" routerLink="/finance">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+        
+      </div>
+      
+    <!-- Filters -->
+    <div class="filter-sort-bar">
+      <div class="filter-group">
+        <mat-icon class="icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search by Billing Document Number"
+          [ngModel]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">sort</mat-icon>
+        <select
+          [(ngModel)]="sortOrder"
+          (change)="onSortChange()"
+          aria-label="Sort Order"
+        >
+          <option value="desc">Date: Newest First</option>
+          <option value="asc">Date: Oldest First</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">check_circle</mat-icon>
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="onStatusChange()"
+          aria-label="Accounting Status Filter"
+        >
+          <option value="ALL">Status: All</option>
+          <option value="CANCELLED">Status: Cancelled</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">calendar_month</mat-icon>
+        <label for="fromDate">From:</label>
+        <input
+          id="fromDate"
+          type="date"
+          [(ngModel)]="filterFromDate"
+          (change)="onDateChange()"
+          aria-label="Filter From Date"
+        />
+      </div>
+
+      <div class="filter-group">
+        <mat-icon class="icon">calendar_month</mat-icon>
+        <label for="toDate">To:</label>
+        <input
+          id="toDate"
+          type="date"
+          [(ngModel)]="filterToDate"
+          (change)="onDateChange()"
+          aria-label="Filter To Date"
+        />
+      </div>
+
+      <div class="download-all-button">
+        <button mat-raised-button color="primary" (click)="downloadAllInvoicesPdf()">
+          <mat-icon>download</mat-icon>
+          Download All Invoices as PDF
+        </button>
+      </div>
+    </div>
+
+  
+      <!-- Page Size Dropdown -->
+      <div class="page-size-control" *ngIf="pagedInvoices.length > 0">
+        <label for="pageSize">Records per page:</label>
+        <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option *ngFor="let size of [5, 10, 15, 20]" [value]="size">{{ size }}</option>
+        </select>
+      </div>
+  
+      <!-- Invoices -->
+      <div class="invoice-list" *ngIf="pagedInvoices.length > 0">
+        <div
+          class="invoice-card"
+          *ngFor="let invoice of pagedInvoices"
+          [attr.data-billing-document-number]="invoice.BillingDocumentNumber"
+          >
+          <div class="invoice-header" tabindex="0" role="button">
+            <div class="invoice-info">
+              <mat-icon>receipt</mat-icon>
+              <span><strong>Invoice:</strong> {{ +invoice.BillingDocumentNumber }}</span>
+            </div>
+          
+            <div class="status-chips">
+              <span class="status-chip full" *ngIf="invoice.CancellationFlag === 'X'">Cancelled</span>
+              <span class="status-chip open" *ngIf="invoice.CancellationFlag === ''">Open</span>
+            </div>
+          
+            <button
+              mat-icon-button
+              color="primary"
+              aria-label="Download Invoice PDF"
+              (click)="downloadInvoicePdf(invoice.BillingDocumentNumber)"
+              title="Download Invoice PDF"
+            >
+              <mat-icon>download</mat-icon>
+            </button>
+          
+            <div class="invoice-date">
+              <mat-icon class="icon">event</mat-icon>
+              {{ invoice.BillingDate | date: 'mediumDate' }}
+              
+              
+              <mat-icon
+                class="icon expand-icon"
+                [class.rotated]="isExpanded(invoice.BillingDocumentNumber)"
+                (click)="toggleItems(invoice.BillingDocumentNumber)"
+              >
+                expand_more
+              </mat-icon>
+            </div>
+          </div>
+          
+  
+          <div class="invoice-details">
+            <div *ngIf="invoice.CompanyCode"><strong>Company Code:</strong> {{ invoice.CompanyCode }}</div>
+            <div *ngIf="invoice.SalesOrganizationText || invoice.SalesOrganization">
+              <strong>Sales Org:</strong> {{ invoice.SalesOrganizationText || invoice.SalesOrganization }}
+            </div>
+            <div *ngIf="invoice.DistributionChannelText || invoice.DistributionChannel">
+              <strong>Dist. Channel:</strong> {{ invoice.DistributionChannelText || invoice.DistributionChannel }}
+            </div>
+            <div *ngIf="invoice.DivisionText || invoice.Division">
+              <strong>Division:</strong> {{ invoice.DivisionText || invoice.Division }}
+            </div>
+            <div *ngIf="invoice.BillingTypeText || invoice.BillingType">
+              <strong>Billing Type:</strong> {{ invoice.BillingTypeText || invoice.BillingType }}
+            </div>
+            <div *ngIf="invoice.AccountingStatusText">
+              <strong>Billing Type:</strong> {{ invoice.AccountingStatusText || invoice.AccountingStatus }}
+            </div>
+  
+            <div *ngIf="invoice.CancellationFlag"><strong>Cancellation Flag:</strong> {{ invoice.CancellationFlag }}</div>
+            <div *ngIf="invoice.DocumentCategory"><strong>Document Category:</strong> {{ invoice.DocumentCategory }}</div>
+  
+            <div *ngIf="invoice.TotalItemCount"><strong>Total Items:</strong> {{ +invoice.TotalItemCount }}</div>
+            <div *ngIf="invoice.ItemNetValue">
+              <strong>Total Net Value:</strong>
+              {{ +invoice.ItemNetValue | currency:invoice.ItemCurrency:'symbol':'1.2-2' }}
+            </div>
+            <div *ngIf="invoice.ItemTaxAmount">
+              <strong>Total Tax Amount:</strong>
+              {{ +invoice.ItemTaxAmount | currency:invoice.ItemCurrency:'symbol':'1.2-2' }}
+            </div>
+          </div>
+  
+          <!-- Expandable Items Table -->
+          <div class="invoice-items"
+          [class.expanded]="isExpanded(invoice.BillingDocumentNumber)">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item No</th>
+                  <th>Material No</th>
+                  <th>Description</th>
+                  <th>Billed Quantity</th>
+                  <th>Sales Unit</th>
+                  <th>Net Value</th>
+                  <th>Tax Amount</th>
+                  <th>Item Category</th>
+                  <th>Order Doc. Number</th>
+                  <th>Order Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of invoice.Items">
+                  <td>{{ item.ItemNumber }}</td>
+                  <td>{{ item.MaterialNumber }}</td>
+                  <td>{{ item.ItemDescription }}</td>
+                  <td>{{ item.BilledQuantity }}</td>
+                  <td>{{ item.SalesUnit }}</td>
+                  <td>{{ item.ItemNetValue | currency: item.ItemCurrency:'symbol':'1.2-2' }}</td>
+                  <td>{{ item.ItemTaxAmount | currency: item.ItemCurrency:'symbol':'1.2-2' }}</td>
+                  <td>{{ item.ItemCategory }}</td>
+                  <td>{{item.SalesOrderNumber | salesItemNumber }}</td>
+                <td>
+                  <ng-container class="order-link" *ngIf="item.SalesOrderNumber; else noOrder">
+                    <a
+                      [href]="'/sales/orders?order=' + item.SalesOrderNumber"
+                      target="_blank"
+                      class="order-link"
+                      title="View Sales Order"
+                    >
+                      View Order
+                    </a>
+                  </ng-container>
+                  
+                  <ng-template #noOrder>
+                    <span class="text-muted">—</span>
+                  </ng-template>
+                </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  
+      <!-- No Results -->
+      <div *ngIf="pagedInvoices.length === 0" class="no-results">
+        <mat-icon class="icon">info</mat-icon> No invoices found for your criteria.
+      </div>
+    </div>
+  
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" aria-label="Previous Page">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" aria-label="Next Page">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+  

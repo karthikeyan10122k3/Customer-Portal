@@ -1,0 +1,39 @@
+<div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <h2>Customer Login</h2>
+
+    <div class="form-group">
+      <label>
+        <mat-icon>badge</mat-icon> Customer ID
+      </label>
+      <input type="text" formControlName="customerId" />
+      <small *ngIf="loginForm.get('customerId')?.hasError('required') && loginForm.get('customerId')?.touched">
+        Customer ID is required
+      </small>
+    </div>
+
+    <div class="form-group password-group">
+      <label>
+        <mat-icon>lock</mat-icon> Password
+      </label>
+      <div class="password-wrapper">
+        <input [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+        <button type="button" class="eye-btn" (click)="togglePasswordVisibility()" aria-label="Toggle password visibility">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+      <small *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+        Password is required
+      </small>
+    </div>
+    
+    <div class="form-group remember">
+      <input type="checkbox" formControlName="rememberMe" id="rememberMe" />
+      <label for="rememberMe">
+         Remember Me
+      </label>
+    </div>
+
+    <button class="text-dark" type="submit" [disabled]="loginForm.invalid">Login</button>
+  </form>
+</div>

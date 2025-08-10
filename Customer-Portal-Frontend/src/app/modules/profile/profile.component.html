@@ -1,0 +1,117 @@
+<ng-container *ngIf="!isLoading">
+  <div class="profile-container">
+
+    <div class="profile-header">
+      <h2 class="title">
+        <mat-icon class="tile-icon">face</mat-icon>
+        Customer Profile
+      </h2>
+      <div class="button-container">
+        <button class="btn edit-btn" (click)="toggleEdit()">
+          {{ isEditing ? 'Save' : 'Edit' }}
+        </button>
+        <button *ngIf="isEditing" class="btn cancel-btn" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="customerProfileForm" *ngIf="profileData" class="profile-form">
+
+      <!-- Personal Details -->
+      <mat-card class="form-section card-tile">
+        <h3 class="section-title">Personal Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="CustomerNumber">Customer</label>
+            <input type="text" id="CustomerNumber" formControlName="CustomerNumber" [readonly]="!isEditing" />
+          </div>
+          <div class="form-group">
+            <label for="CustomerName">Customer Name</label>
+            <input type="text" id="CustomerName" formControlName="CustomerName" [readonly]="!isEditing" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="Language">Language</label>
+            <input type="text" id="Language" formControlName="Language" [readonly]="!isEditing" />
+          </div>
+          <div class="form-group">
+            <label for="CreatedOn">Created On</label>
+            <input type="text" id="CreatedOn" formControlName="CreatedOn" [readonly]="!isEditing" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="CreatedBy">Created By</label>
+            <input type="text" id="CreatedBy" formControlName="CreatedBy" [readonly]="!isEditing" />
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Address Details -->
+      <mat-card class="form-section card-tile">
+        <h3 class="section-title">Address Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="Street">Street</label>
+            <input type="text" id="Street" formControlName="Street" [readonly]="!isEditing" />
+          </div>
+          <div class="form-group">
+            <label for="City">City</label>
+            <input type="text" id="City" formControlName="City" [readonly]="!isEditing" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="PostalCode">Postal Code</label>
+            <input type="text" id="PostalCode" formControlName="PostalCode" [readonly]="!isEditing" />
+          </div>
+          <div class="form-group">
+            <label for="Country">Country</label>
+            <input type="text" id="Country" formControlName="Country" [readonly]="!isEditing" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="TimeZone">Time Zone</label>
+            <input type="text" id="TimeZone" formControlName="TimeZone" [readonly]="!isEditing" />
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Sales & Distribution Details -->
+      <mat-card class="form-section card-tile">
+        <h3 class="section-title">Sales & Distribution</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="SalesOrganization">Sales Org</label>
+            <input type="text" id="SalesOrganization" formControlName="SalesOrganization" [readonly]="!isEditing" />
+          </div>
+          <div class="form-group">
+            <label for="DistributionChannel">Distribution Channel</label>
+            <input type="text" id="DistributionChannel" formControlName="DistributionChannel" [readonly]="!isEditing" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="Currency">Currency</label>
+            <input type="text" id="Currency" formControlName="Currency" [readonly]="!isEditing" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="SalesDistrict">Sales District</label>
+            <input type="text" id="SalesDistrict" formControlName="SalesDistrict" [readonly]="!isEditing" />
+          </div>
+        </div>
+      </mat-card>
+    </form>
+  </div>
+</ng-container>
