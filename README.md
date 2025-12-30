@@ -69,3 +69,13 @@ This project simplifies the development of SAP-integrated customer-facing applic
 
 ## Architecture Overview
 
+Angular Frontend
+|
+REST APIs
+|
+Node.js / Express Backend
+|
+Middleware Layer (Auth, SAP RFC, XML Parsing)
+|
+SAP S/4HANA (ABAP, RFC, Database)
+---
